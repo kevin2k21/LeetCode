@@ -1,4 +1,4 @@
-class Solution:
+class Solution:#inclomplete TLE error
     def numberOfSubstrings(self, s: str) -> int:
         n = len(s)
         cnt = 0
