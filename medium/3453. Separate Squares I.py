@@ -1,36 +1,25 @@
+from itertools import pairwise
 from typing import List
+from collections import defaultdict
 
 class Solution:
     def separateSquares(self, squares: List[List[int]]) -> float:
-        min_y = float('inf')
-        max_y = float('-inf')
+        diff = defaultdict(int)
         total = 0
-        for x,y,a in squares:
-            min_y = min(min_y,y)
-            max_y = max(max_y,y+a)
-            total += a * a
-        
-        half = total/2
+        for x,y,l in squares:
+            diff[y] += l
+            diff[y+l] -= l
+            total += l*l
 
-        def low_area(line):
-            area = 0
-            for x,y,a in squares:
-                if line <= y:
-                    continue
-                elif line >= y+a:
-                    area += a*a
-                else:
-                    area += a*(line-y)
-            return area
+        s = 0
+        area = 0
         
-        while max_y - min_y > 1e-6:
-            mid = (min_y+max_y)/2
-            if low_area(mid) >= half:
-                max_y = mid
-            else:
-                min_y = mid
+        for y1,y2 in pairwise(sorted(diff)):
+            s += diff[y1]
+            area += s*(y2-y1)
 
-        return min_y
+            if area*2 >= total:
+                return y2-(area*2 - total)/(2*s)
     
 sol = Solution()
 print(sol.separateSquares([[0,0,2],[1,1,1]]))
